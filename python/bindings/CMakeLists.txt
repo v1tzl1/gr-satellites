@@ -52,6 +52,7 @@ list(APPEND satellites_python_files
     pdu_head_tail_python.cc
     pdu_length_filter_python.cc
     pdu_scrambler_python.cc
+    pdu_scrambler_soft_python.cc
     phase_unwrap_python.cc
     python_bindings.cc
     selector_python.cc

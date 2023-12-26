@@ -44,6 +44,7 @@ void bind_pdu_add_meta(py::module& m);
 void bind_pdu_head_tail(py::module& m);
 void bind_pdu_length_filter(py::module& m);
 void bind_pdu_scrambler(py::module& m);
+void bind_pdu_scrambler_soft(py::module& m);
 void bind_phase_unwrap(py::module& m);
 void bind_selector(py::module& m);
 void bind_u482c_decode(py::module& m);
@@ -101,6 +102,7 @@ PYBIND11_MODULE(satellites_python, m)
     bind_pdu_head_tail(m);
     bind_pdu_length_filter(m);
     bind_pdu_scrambler(m);
+    bind_pdu_scrambler_soft(m);
     bind_phase_unwrap(m);
     bind_selector(m);
     bind_u482c_decode(m);

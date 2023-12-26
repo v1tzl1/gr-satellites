@@ -67,6 +67,7 @@ list(APPEND satellites_sources
     pdu_head_tail_impl.cc
     pdu_length_filter_impl.cc
     pdu_scrambler_impl.cc
+    pdu_scrambler_soft_impl.cc
     phase_unwrap_impl.cc
     randomizer.c
     selector_impl.cc
