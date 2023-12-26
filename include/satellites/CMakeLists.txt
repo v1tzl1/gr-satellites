@@ -44,6 +44,7 @@ install(FILES
     nusat_decoder.h
     pdu_add_meta.h
     pdu_head_tail.h
+    pdu_head_tail_soft.h
     pdu_length_filter.h
     pdu_scrambler.h
     pdu_scrambler_soft.h

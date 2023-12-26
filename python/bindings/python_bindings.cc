@@ -42,6 +42,7 @@ void bind_nrzi_encode(py::module& m);
 void bind_nusat_decoder(py::module& m);
 void bind_pdu_add_meta(py::module& m);
 void bind_pdu_head_tail(py::module& m);
+void bind_pdu_head_tail_soft(py::module& m);
 void bind_pdu_length_filter(py::module& m);
 void bind_pdu_scrambler(py::module& m);
 void bind_pdu_scrambler_soft(py::module& m);
@@ -100,6 +101,7 @@ PYBIND11_MODULE(satellites_python, m)
     bind_nusat_decoder(m);
     bind_pdu_add_meta(m);
     bind_pdu_head_tail(m);
+    bind_pdu_head_tail_soft(m);
     bind_pdu_length_filter(m);
     bind_pdu_scrambler(m);
     bind_pdu_scrambler_soft(m);

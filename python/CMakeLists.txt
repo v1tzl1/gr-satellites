@@ -122,6 +122,7 @@ GR_ADD_TEST(qa_manchester_sync ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/
 GR_ADD_TEST(qa_nrzi ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_nrzi.py)
 GR_ADD_TEST(qa_pdu_add_meta ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_add_meta.py)
 GR_ADD_TEST(qa_pdu_head_tail ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head_tail.py)
+GR_ADD_TEST(qa_pdu_head_tail_soft ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head_tail_soft.py)
 GR_ADD_TEST(qa_pdu_length_filter ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_length_filter.py)
 GR_ADD_TEST(qa_pdu_scrambler ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_scrambler.py)
 GR_ADD_TEST(qa_pdu_scrambler_soft ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_scrambler_soft.py)

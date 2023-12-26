@@ -72,6 +72,7 @@ install(FILES
     satellites_nusat_decoder.block.yml
     satellites_pdu_add_meta.block.yml
     satellites_pdu_head_tail.block.yml
+    satellites_pdu_head_tail_soft.block.yml
     satellites_pdu_length_filter.block.yml
     satellites_pdu_scrambler.block.yml
     satellites_pdu_scrambler_soft.block.yml
