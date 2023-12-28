@@ -1,0 +1,46 @@
+id: satellites_massey_frame_sync_soft
+label: Massey Frame Synchronization Soft
+category: '[Satellites]/Packet'
+
+templates:
+  imports: import satellites
+  make: satellites.massey_frame_sync_soft(${syncword}, ${payload_len}, ${threshold}, ${strip_asm}, ${sync_tag})
+
+parameters:
+- id: syncword
+  label: Syncword
+  dtype: string
+  default: 1ACFFC1D
+- id: payload_len
+  label: Payload length (bit)
+  dtype: int
+  default: 223
+- id: threshold
+  label: Threshold
+  dtype: float
+  default: -1.0
+- id: strip_asm
+  dtype: enum
+  options: ['True', 'False']
+  options_label: [True, False]
+  default: 'True'
+- id: sync_tag
+  label: Length tag name
+  dtype: string
+  default: packet_len
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+- label: score
+  domain: stream
+  dtype: float
+  optional: True
+
+file_format: 1

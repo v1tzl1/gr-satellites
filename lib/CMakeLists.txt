@@ -44,6 +44,7 @@ endif(MSVC)
 
 list(APPEND satellites_sources
     ax100_decode_impl.cc
+    bpsk_snr_est.cc
     convolutional_encoder_impl.cc
     costas_loop_8apsk_cc_impl.cc
     crc.cc
@@ -59,6 +60,7 @@ list(APPEND satellites_sources
     golay24.c
     lilacsat1_demux_impl.cc
     manchester_sync_impl.cc
+    massey_frame_sync_soft_impl.cc
     matrix_deinterleaver_soft_impl.cc
     nrzi_decode_impl.cc
     nrzi_encode_impl.cc

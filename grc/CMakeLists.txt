@@ -63,6 +63,7 @@ install(FILES
     satellites_lilacsat1_demux.block.yml
     satellites_lilacsat1_gps_kml.block.yml
     satellites_manchester_sync.block.yml
+    satellites_massey_frame_sync_soft.block.yml
     satellites_matrix_deinterleaver_soft.block.yml
     satellites_ngham_check_crc.block.yml
     satellites_ngham_packet_crop.block.yml

@@ -24,6 +24,7 @@
 install(FILES
     api.h
     ax100_decode.h
+    bpsk_snr_est.h
     crc.h
     crc_append.h
     crc_check.h
@@ -38,6 +39,7 @@ install(FILES
     fixedlen_to_pdu.h
     lilacsat1_demux.h
     manchester_sync.h
+    massey_frame_sync_soft.h
     matrix_deinterleaver_soft.h
     nrzi_decode.h
     nrzi_encode.h
