@@ -1,0 +1,318 @@
+options:
+  parameters:
+    author: "Martin L\xFClf"
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: Decode MOVE-II baseband recording (which needs to be dopplercorrected)
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: move2_postprocessing
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: run
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: MOVE-II decoder (postprocessing)
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ''
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2440, 268.0]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_1
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ''
+    type: float
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 500.0]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: ''
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [72, 268.0]
+    rotation: 0
+    state: true
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: 'TODO: Placeholder for ambiguity resolution.
+
+
+      Based on the sign of the frame_correlation tag
+
+      we can see whether or not the softbits need to
+
+      be inverted. I still need to see how ambiguity
+
+      resolution is usually done within gr-satellites. If
+
+      required we need to add a new block for
+
+      ambiguity resolution.'
+    const: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 284.0]
+    rotation: 0
+    state: true
+- name: blocks_stream_to_vector_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '2048'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1824, 288.0]
+    rotation: 0
+    state: enabled
+- name: blocks_vector_to_stream_0
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '1024'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2248, 288.0]
+    rotation: 0
+    state: enabled
+- name: ldpc_toolbox_ldpc_decoder_0
+  id: ldpc_toolbox_ldpc_decoder
+  parameters:
+    affinity: ''
+    alias: ''
+    alist: /home/mluelf/Downloads/AR4JA_r12_k1024n.a
+    comment: 'Using gr-ldpc-toolbox, since
+
+      gr-satellites does not support
+
+      LDPC yet.
+
+
+      No idea which decoder
+
+      implementation is sensible/
+
+      good here. Need to try things
+
+      out.'
+    implementation: '''Phif32'''
+    k: '1024'
+    max_iterations: '200'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '2048'
+    puncturing: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2008, 244.0]
+    rotation: 0
+    state: enabled
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1584, 284.0]
+    rotation: 0
+    state: enabled
+- name: pdu_tagged_stream_to_pdu_1
+  id: pdu_tagged_stream_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1088, 284.0]
+    rotation: 0
+    state: true
+- name: satellites_bpsk_demodulator_0
+  id: satellites_bpsk_demodulator
+  parameters:
+    affinity: ''
+    alias: ''
+    baudrate: 12.5e3
+    comment: ''
+    differential: 'False'
+    f_offset: '0'
+    iq: 'True'
+    manchester: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    options: '""'
+    samp_rate: 25e3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 268.0]
+    rotation: 0
+    state: true
+- name: satellites_massey_frame_sync_soft_0
+  id: satellites_massey_frame_sync_soft
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    payload_len: '2048'
+    strip_asm: 'True'
+    sync_tag: packet_len
+    syncword: 49E0DCC7
+    threshold: '-1.0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 268.0]
+    rotation: 0
+    state: true
+- name: satellites_pdu_scrambler_soft_0
+  id: satellites_pdu_scrambler_soft
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    sequence: '[255, 18, 112, 3, 89, 176, 14, 61, 113, 52, 201, 181, 229, 237, 98,
+      115, 90, 233, 190, 51, 76, 69, 253, 124, 80, 8, 143, 17, 41, 179, 87, 141, 127,
+      9, 184, 129, 44, 88, 135, 158, 56, 154, 228, 218, 242, 118, 177, 57, 173, 116,
+      223, 25, 166, 162, 126, 62, 40, 132, 199, 136, 148, 217, 171, 198, 191, 4, 220,
+      64, 22, 172, 67, 79, 28, 77, 114, 109, 121, 187, 216, 156, 86, 186, 239, 12,
+      83, 81, 63, 31, 20, 194, 99, 68, 202, 236, 85, 227, 95, 2, 110, 32, 11, 214,
+      161, 39, 142, 38, 185, 182, 188, 93, 108, 78, 43, 221, 119, 134, 169, 168, 159,
+      15, 10, 225, 49, 34, 101, 246, 170, 241, 47, 1, 55, 144, 5, 235, 208, 19, 71,
+      147, 92, 91, 222, 46, 54, 167, 149, 238, 59, 195, 84, 212, 207, 7, 133, 240,
+      24, 145, 50, 123, 213, 248, 151, 128, 27, 200, 130, 117, 232, 137, 163, 73,
+      174, 45, 111, 23, 155, 211, 74, 247, 157, 97, 42, 234, 231, 131, 66, 120, 140,
+      72, 153, 189, 106, 252, 75, 192, 13, 100, 193, 58, 244, 196, 209, 36, 215, 150,
+      183, 139, 205, 105, 165, 251, 206, 48, 21, 245, 243, 65, 33, 60, 70, 164, 204,
+      94, 53, 254, 37, 224, 6, 178, 96, 29, 122, 226, 104, 146, 107, 203, 219, 197,
+      230, 180, 210, 125, 103, 152, 138, 250, 249, 160, 16, 30, 35, 82, 102, 175,
+      26, 255]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1344, 284.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_file_source_0, '0', satellites_bpsk_demodulator_0, '0']
+- [blocks_multiply_const_vxx_0, '0', pdu_tagged_stream_to_pdu_1, '0']
+- [blocks_stream_to_vector_0, '0', ldpc_toolbox_ldpc_decoder_0, '0']
+- [blocks_vector_to_stream_0, '0', blocks_file_sink_0, '0']
+- [ldpc_toolbox_ldpc_decoder_0, '0', blocks_vector_to_stream_0, '0']
+- [pdu_pdu_to_tagged_stream_0, '0', blocks_stream_to_vector_0, '0']
+- [pdu_tagged_stream_to_pdu_1, pdus, satellites_pdu_scrambler_soft_0, in]
+- [satellites_bpsk_demodulator_0, '0', satellites_massey_frame_sync_soft_0, '0']
+- [satellites_massey_frame_sync_soft_0, '0', blocks_multiply_const_vxx_0, '0']
+- [satellites_massey_frame_sync_soft_0, '1', blocks_file_sink_1, '0']
+- [satellites_pdu_scrambler_soft_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.7.0
