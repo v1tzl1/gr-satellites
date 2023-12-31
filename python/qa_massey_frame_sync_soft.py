@@ -79,10 +79,10 @@ class qa_massey_frame_sync_soft(gr_unittest.TestCase):
                 self.assertEqual(pmt.to_python(tag_len.value), frame_len)
 
     def test_001(self):
-        self.run_test(*ccsds_asm, payload_len=223, num_payloads=7, num_prefix=42, num_suffix=15, strip_asm=False, snr_db=10, flip_data=False)
+        self.run_test(*ccsds_asm, payload_len=223, num_payloads=7, num_prefix=42, num_suffix=15, snr_db=10, flip_data=False)
 
     def test_001(self):
-        self.run_test(*ccsds_asm, payload_len=223, num_payloads=7, num_prefix=42, num_suffix=15, strip_asm=False, snr_db=10, flip_data=True)
+        self.run_test(*ccsds_asm, payload_len=223, num_payloads=7, num_prefix=42, num_suffix=15, snr_db=10, flip_data=True)
 
 
 if __name__ == '__main__':
