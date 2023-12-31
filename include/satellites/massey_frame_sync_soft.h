@@ -29,15 +29,39 @@ namespace gr {
       typedef std::shared_ptr<massey_frame_sync_soft> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of satellites::massey_frame_sync_soft.
+       * \brief Perform frame syncrhonization according to James Masseys paper "Optimum Frame Syncrhonization"
        *
-       * \param syncword String of hexadecimal representation of the sync marker, e.g. "1ACFFC1D" for the standard CCSDS ASM.
+       * This block operates on blocks of \ref packet_len bits (length of sync word and payload length).
+       * For each input symbol in the block, the normalized correlation with the sync word and the normalized
+       * score (correlation minus correction term) is computed.
+       * 
+       * 
+       * After score computation the position within the search block with the maximum score is searched. Depending
+       * on the \ref threshold parameter there is a detected frame for every block, or only if the score exceeds a
+       * theshold.
+       * 
+       * For each detected frame a couple of stream tags are attached to the output streams:
+       *  - frame_correlation (float): Normalized correlation coefficient
+       *  - frame_score (float): Normalized correlation minus the normalized correction term
+       *  - frame_snr_db (float): Average estimated signal to noise ratio in dB over the search range.
+       *    The search range has the same length than \ref packet_len, but is only aligned with
+       *    the frame (and thus reflects the average frame SNR), if the frame is detected with offset
+       *    0 in the search range.
+       *  - frame_search_offset (uint64): Offset beteen search range and start of frame.
+       *  - packet_len (uint64): Packet length in bits (sync word length + payload length)
+       *
+       * The input data is copied to the first output stream. If the optional second output stream is connected it will
+       * contain the computed score for each input symbol.
+       * 
+       * \param syncword String of hexadecimal representation of the sync marker, e.g. "1ACFFC1D" for the standard
+       *                 CCSDS ASM.
        * \param payload_len Number of payload bits
-       * \param threshold Threshold for frame detection. If positive, potential frames with a score less than the threshold value are ignored. If the threshold is zero or negative, the block will tag the most likely frame location for every block.
-       * \param strip_asm If false the generated tags will be attatched to the first symbol of the detected ASM and have a length of ASM length + payload_length. If true the tag will be attached to the first payload bit and have a length of payload_length.
-       * \param tag_name Name for the tag that should be attached. The value of that tag will be a long unsigned with the payload_length
+       * \param threshold Threshold for frame detection. If positive, potential frames with an absolute normalized 
+       *                  **correlation** (not score) value of less than the threshold value are ignored. If the
+       *                  threshold is zero or negative, the block will always tag the most likely frame location
+       *                  within the search range.
        */
-      static sptr make(std::string syncword, size_t payload_len, float threshold, bool strip_asm, std::string tag_name);
+      static sptr make(std::string syncword, size_t payload_len, float threshold);
     };
 
   } // namespace satellites

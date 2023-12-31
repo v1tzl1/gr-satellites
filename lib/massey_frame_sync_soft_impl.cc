@@ -56,17 +56,17 @@ namespace gr {
     using output_type = float;
 
     massey_frame_sync_soft::sptr
-    massey_frame_sync_soft::make(std::string syncword, size_t payload_len, float threshold, bool strip_asm, std::string tag_name)
+    massey_frame_sync_soft::make(std::string syncword, size_t payload_len, float threshold)
     {
       return gnuradio::make_block_sptr<massey_frame_sync_soft_impl>(
-        syncword, payload_len, threshold, strip_asm, tag_name);
+        syncword, payload_len, threshold);
     }
 
 
     /*
      * The private constructor
      */
-    massey_frame_sync_soft_impl::massey_frame_sync_soft_impl(std::string syncword, size_t payload_len, float threshold, bool strip_asm, std::string tag_name)
+    massey_frame_sync_soft_impl::massey_frame_sync_soft_impl(std::string syncword, size_t payload_len, float threshold)
       : gr::sync_block("massey_frame_sync_soft",
               gr::io_signature::make(1, 1, sizeof(input_type)),
               gr::io_signature::make(1, 2, sizeof(output_type))),
@@ -74,12 +74,13 @@ namespace gr {
         d_sync_len(syncword.size()*4lu),
         d_frame_len(d_payload_len+d_sync_len),
         d_threshold(threshold),
-        d_strip_asm(strip_asm),
-        d_tag_key_length(pmt::intern(tag_name)),
         d_tag_source(pmt::intern("massey_frame_sync_soft")),
-        d_tag_length(pmt::from_uint64(d_strip_asm ? d_payload_len : d_frame_len)),
         d_tag_key_score(pmt::intern("frame_score")),
         d_tag_key_correlation(pmt::intern("frame_correlation")),
+        d_tag_key_snr(pmt::intern("frame_snr_db")),
+        d_tag_key_offset(pmt::intern("frame_search_offset")),
+        d_tag_key_length(pmt::intern("packet_len")),
+        d_tag_length(pmt::from_uint64(d_frame_len)),
         d_correction_clamp_value(5.0),
         d_snr_est(d_frame_len)
     {
@@ -151,13 +152,14 @@ namespace gr {
             std::memcpy(&d_buffer[d_frame_len], &in[i*d_frame_len], d_sync_len*sizeof(input_type));  // repeat the first L symbols to simulate wrapping around
 
             const double snr_linear = d_snr_est.snr_linear(d_buffer);
-            this->d_logger->debug("SNR estimated to {:f}={:e}", snr_linear, snr_linear);
+            const double snr_db = 10.0f*log10(snr_linear);
+            this->d_logger->debug("SNR estimated to {:f}={:e}={:.3f} dB", snr_linear, snr_linear, snr_db);
 
             bool clamped = false;
 
             for (size_t j=0lu; j<d_frame_len; j++) {
                 volk_32f_x2_dot_prod_32f(&d_correlation[j], &d_buffer[j], d_sync_word, d_sync_len);
-                d_correction[j] = 1.0/snr_linear*log(cosh(d_buffer[j]*snr_linear));
+                d_correction[j] = (snr_linear != 0.0f) ? 1.0f/snr_linear*log(cosh(d_buffer[j]*snr_linear)) : 0.0f;
                 
                 if (!std::isfinite(d_correction[j])) {
                     clamped = true;
@@ -168,7 +170,7 @@ namespace gr {
             volk_32f_s32f_multiply_32f(d_correlation, d_correlation, 1.0f/static_cast<float>(d_sync_len), d_frame_len);
 
             if (clamped) {
-                d_logger->info("At least one correction value was non-finite (SNR too high?). Clamping corrections to {}", d_correction_clamp_value);
+                d_logger->debug("At least one correction value was non-finite (SNR too high?). Clamping corrections to {}", d_correction_clamp_value);
             }
 
 
@@ -194,23 +196,27 @@ namespace gr {
             frame_score = d_score[max_index];
             frame_correlation = d_correlation[max_index];
 
-            if (d_threshold > 0.0 && frame_score < d_threshold) {
+            if (d_threshold > 0.0 && abs(frame_correlation) < d_threshold) {
                 // Threshold value is not reached, ignore frame
-                this->d_logger->debug("Highest score {} at offset {} is below the threshold of {}, ignoring frame", frame_score, max_index, d_threshold);
+                this->d_logger->debug("Potential frame at offset {} has a score of {} and a correlation of {}/{}, which is below the threshold, ignoring frame", max_index, frame_score, frame_correlation, d_threshold);
                 continue;
             }
 
             // create output tag(s)
-            const uint64_t offset = nitems_read(0) + i*d_frame_len + max_index + (d_strip_asm ? d_sync_len : 0lu);
+            const uint64_t offset = nitems_read(0) + i*d_frame_len + max_index;
             this->d_logger->debug("Found frame at at offset {} with score {}, creating tags at {}", max_index, frame_score, offset);
-            add_item_tag(0, offset, d_tag_key_length, d_tag_length, d_tag_source);
             add_item_tag(0, offset, d_tag_key_score, pmt::from_float(frame_score), d_tag_source);
-            add_item_tag(0, offset, d_tag_key_correlation, pmt::from_float(frame_correlation));
-
+            add_item_tag(0, offset, d_tag_key_correlation, pmt::from_float(frame_correlation), d_tag_source);
+            add_item_tag(0, offset, d_tag_key_snr, pmt::from_float(snr_db), d_tag_source);
+            add_item_tag(0, offset, d_tag_key_offset, pmt::from_uint64(max_index), d_tag_source);
+            add_item_tag(0, offset, d_tag_key_length, d_tag_length, d_tag_source);
+            
             if (optional_output) {
-                add_item_tag(1, offset, d_tag_key_length, d_tag_length, d_tag_source);
                 add_item_tag(1, offset, d_tag_key_score, pmt::from_float(frame_score), d_tag_source);
-                add_item_tag(1, offset, d_tag_key_correlation, pmt::from_float(frame_correlation));
+                add_item_tag(1, offset, d_tag_key_correlation, pmt::from_float(frame_correlation), d_tag_source);
+                add_item_tag(1, offset, d_tag_key_snr, pmt::from_float(snr_db), d_tag_source);
+                add_item_tag(1, offset, d_tag_key_offset, pmt::from_uint64(max_index), d_tag_source);
+                add_item_tag(1, offset, d_tag_key_length, d_tag_length, d_tag_source);
             }
         }
         

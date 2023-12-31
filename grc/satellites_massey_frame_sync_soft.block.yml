@@ -4,7 +4,7 @@ category: '[Satellites]/Packet'
 
 templates:
   imports: import satellites
-  make: satellites.massey_frame_sync_soft(${syncword}, ${payload_len}, ${threshold}, ${strip_asm}, ${sync_tag})
+  make: satellites.massey_frame_sync_soft(${syncword}, ${payload_len}, ${threshold})
 
 parameters:
 - id: syncword
@@ -19,15 +19,6 @@ parameters:
   label: Threshold
   dtype: float
   default: -1.0
-- id: strip_asm
-  dtype: enum
-  options: ['True', 'False']
-  options_label: [True, False]
-  default: 'True'
-- id: sync_tag
-  label: Length tag name
-  dtype: string
-  default: packet_len
 
 inputs:
 - label: in
