@@ -30,6 +30,7 @@ include(GrPybind)
 
 list(APPEND satellites_python_files
     ax100_decode_python.cc
+    correct_ambiguity_python.cc
     crc_python.cc
     crc_append_python.cc
     crc_check_python.cc

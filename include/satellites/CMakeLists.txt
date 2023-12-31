@@ -25,6 +25,7 @@ install(FILES
     api.h
     ax100_decode.h
     bpsk_snr_est.h
+    correct_ambiguity.h
     crc.h
     crc_append.h
     crc_check.h

@@ -46,6 +46,7 @@ list(APPEND satellites_sources
     ax100_decode_impl.cc
     bpsk_snr_est.cc
     convolutional_encoder_impl.cc
+    correct_ambiguity_impl.cc
     costas_loop_8apsk_cc_impl.cc
     crc.cc
     crc_append_impl.cc

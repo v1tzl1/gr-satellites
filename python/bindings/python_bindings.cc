@@ -22,6 +22,7 @@ namespace py = pybind11;
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
 void bind_ax100_decode(py::module& m);
+void bind_correct_ambiguity(py::module& m);
 void bind_crc(py::module& m);
 void bind_crc_append(py::module& m);
 void bind_crc_check(py::module& m);
@@ -82,6 +83,7 @@ PYBIND11_MODULE(satellites_python, m)
     /**************************************/
     // BINDING_FUNCTION_CALLS(
     bind_ax100_decode(m);
+    bind_correct_ambiguity(m);
     bind_crc(m);
     bind_crc_append(m);
     bind_crc_check(m);
