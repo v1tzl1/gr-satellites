@@ -37,8 +37,8 @@ correct_ambiguity::make(std::string correlation_tag)
     */
 correct_ambiguity_impl::correct_ambiguity_impl(std::string correlation_tag)
     : gr::sync_block("correct_ambiguity",
-            gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, sizeof(input_type)),
-            gr::io_signature::make(1 /* min outputs */, 1 /*max outputs */, sizeof(output_type))),
+            gr::io_signature::make(1, 1, sizeof(input_type)),
+            gr::io_signature::make(1, 1, sizeof(output_type))),
     d_correlation_key(pmt::intern(correlation_tag)),
     d_factor(1.0f)
 {
