@@ -49,8 +49,10 @@ class qa_massey_frame_sync_soft(gr_unittest.TestCase):
         vector_source = blocks.vector_source_f(data_in+noise_in, False, 1, [])
         tag_debug_data = blocks.tag_debug(gr.sizeof_float*1, 'signal_stream')
         tag_debug_data.set_display(False)
+        tag_debug_data.set_save_all(True)
         tag_debug_score = blocks.tag_debug(gr.sizeof_float*1, 'score_stream')
         tag_debug_score.set_display(False)
+        tag_debug_score.set_save_all(True)
         
         tb.connect((vector_source, 0), (frame_sync, 0))
         tb.connect((frame_sync, 0), (tag_debug_data, 0))
