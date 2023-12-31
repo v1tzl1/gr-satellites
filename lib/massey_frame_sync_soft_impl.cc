@@ -88,6 +88,7 @@ namespace gr {
         set_alignment(std::max(1, static_cast<int>(alignment / sizeof(output_type))));
         
         set_output_multiple(d_frame_len);
+        set_tag_propagation_policy(gr::block::tag_propagation_policy_t::TPP_ALL_TO_ALL);
 
         d_sync_word = (float*) volk_malloc(d_sync_len*sizeof(float), alignment);
         d_score = (float*) volk_malloc(d_frame_len*sizeof(float), alignment);
