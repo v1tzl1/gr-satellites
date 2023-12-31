@@ -17,7 +17,7 @@ outputs:
 
 templates:
     imports: import satellites
-    make: satellites.pdu_scrambler(${sequence})
+    make: satellites.pdu_scrambler_soft(${sequence})
 
 documentation: |-
     PDU Scrambler (softbit)
